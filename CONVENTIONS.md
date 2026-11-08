@@ -230,4 +230,4 @@ git push origin v0.1.1
 
 - `mstsc-manager`：根目录 `main.py` 入口、`[tool.uv] package = false`（规范：`run.py` + hatchling）；日志目录 `%APPDATA%\mstsc-manager\`（规范多一层 `ccbs\`）；中文 README 叫 `README_zh.md`。
 - `stl-frame-editor`：日志目录 `~/.ccbs/stl-frame-editor/`；日志文本中文；截图目录 `assert/`；CI 用 pip 而非 uv；`requires-python >=3.10`；默认语言固定英文。
-- `urdf-inspector`：缺 `log.py`、`changelog.py`、`version_dialogs.py`、`dev.md`、`.github/`；截图目录 `assert/`；`requires-python >=3.9`；默认语言固定英文。
+- `urdf-inspector`：已对齐（2026-11-08）。
