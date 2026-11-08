@@ -24,9 +24,9 @@ description: 按 CCBS 规范从 dev-rules/templates 新建一个 Python + PySide
 2. 复制 `dev-rules/templates/` 全部内容（含 `.github/`、`.gitignore`）到目标目录；把 `templates/__PKG__/` 重命名为 `<PKG>/`。
 3. 全文替换占位符：`__APP_NAME__` → APP_NAME，`__PKG__` → PKG，`__TITLE__` → TITLE，`__APP_TITLE_EN__`、`__APP_TITLE_ZH__`。
    替换后 `rg "__APP_NAME__|__PKG__|__TITLE__|__APP_TITLE"` 必须无结果。
-4. 发布目标：
-   - 源码公开：保留 `.github/workflows/build.yml`，删除 `build.release-repo.yml`。
-   - 源码私有：删除 `build.yml`，把 `build.release-repo.yml` 改名为 `build.yml`；把 `<PKG>/changelog.py` 的 `RELEASE_REPO` 改成 `ccbs-tools/<APP_NAME>-release`。
+4. 发布目标（规则：`changelog.py` 的 `RELEASE_REPO` 含 `release` 字样 ⇔ 源码私有 ⇔ 用 App Secrets 发到独立公开仓库；CI 会校验）：
+   - 源码公开：保留 `.github/workflows/build.yml`，删除 `build.release-repo.yml`；`RELEASE_REPO` 保持 `ccbs-tools/<APP_NAME>`。
+   - 源码私有：删除 `build.yml`，把 `build.release-repo.yml` 改名为 `build.yml`；把 `<PKG>/changelog.py` 的 `RELEASE_REPO` 改成 `ccbs-tools/<APP_NAME>-release`（与工作流 `env.RELEASE_REPO` 相同）。
 5. `pyproject.toml`：按需追加依赖；用到 Qt Addons 模块才把 `PySide6-Essentials` 换成 `PySide6`。
 6. 3D 工具：在 `__main__.py` 标注位置加 `QSurfaceFormat`（4x MSAA、24 位深度、CompatibilityProfile）；`main.spec` 不要排除 `QtOpenGL*`。纯 Widgets 工具：可把 `PySide6.QtOpenGL`、`PySide6.QtOpenGLWidgets` 加进 `excludes`。
 7. `<PKG>/changelog.py` 的 `RELEASES[0]`：版本 `0.1.0`，日期改为今天，notes 写上这个工具做什么（中英都写）。

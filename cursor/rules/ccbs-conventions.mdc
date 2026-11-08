@@ -23,6 +23,7 @@ Python 3.12 + PySide6 + uv + loguru + PyInstaller onedir + GitHub Actions 发 Re
 - 界面文字全部走 `tr()`，中英两张表键一致；控件文字在 `retranslate()` 里设置。
 - 日志 `from .log import logger`，文本英文，用 `{}` 占位。
 - 发版同时改三处版本号：`<pkg>/__init__.py`、`pyproject.toml`、`changelog.py` 的 `RELEASES`。
+- `changelog.py` 的 `RELEASE_REPO` 含 `release` 字样 ⇔ 源码私有 ⇔ CI 用 App Secrets 发到 `<name>-release` 公开仓库（`build.release-repo.yml`）；否则必须等于本仓库全名。
 - 代码注释与 docstring 用中文。
 - 老项目与规范的已知差异见 CONVENTIONS.md §13；改老项目不要求一次性对齐，但新增代码按规范写。
 - 新建工具用 Skill `ccbs-new-tool`。

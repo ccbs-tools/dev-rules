@@ -38,6 +38,24 @@ jobs:
       - name: Install dependencies
         run: uv sync --group dev
 
+      # 规则：changelog.py 的 RELEASE_REPO 含 "release" 字样 → 源码私有，Release 通过 App Secrets 发到
+      # 独立公开仓库，所以它必须等于本工作流的 env.RELEASE_REPO（程序检查更新才会查对地方）。
+      - name: Check release target
+        shell: pwsh
+        run: |
+          $m = Select-String -Path __PKG__/changelog.py -Pattern '^RELEASE_REPO\s*=\s*"([^"]+)"'
+          if (-not $m) { Write-Error "RELEASE_REPO not found in __PKG__/changelog.py"; exit 1 }
+          $target = $m.Matches.Groups[1].Value
+          Write-Host "changelog RELEASE_REPO=$target  workflow RELEASE_REPO=$env:RELEASE_REPO"
+          if ($target -notmatch 'release') {
+            Write-Error "RELEASE_REPO '$target' has no 'release' in its name: this workflow publishes to a separate public release repo and expects ccbs-tools/<name>-release. Use build.yml instead if the source repo is public (see dev-rules/CONVENTIONS.md §8)."
+            exit 1
+          }
+          if ($target -ne $env:RELEASE_REPO) {
+            Write-Error "RELEASE_REPO in changelog.py ('$target') must equal env.RELEASE_REPO in this workflow ('$env:RELEASE_REPO')."
+            exit 1
+          }
+
       - name: Resolve version
         id: ver
         shell: pwsh

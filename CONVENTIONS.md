@@ -153,7 +153,10 @@ CI 在推 tag 时校验三处一致，不一致直接失败。
 - 两种方式并发竞速：HEAD `https://github.com/<repo>/releases/latest` 跟随 302 取 tag（不占 API 配额）；GET `api.github.com/repos/<repo>/releases/latest`（未登录 60 次/小时，共享出口 IP 容易 403）。谁先成功用谁。
 - 总预算 `UPDATE_CHECK_TIMEOUT_S = 20`，对话框倒计时与之一致。
 - 下载资源名 `ASSET_NAME_FMT = "__APP_NAME__-v{ver}-windows-x64.zip"`，必须和 `build.yml` 的 "Package zip" 一致。
-- `RELEASE_REPO` 指向**发 Release 的仓库**：源码公开则就是本仓库；源码私有则是 `ccbs-tools/__APP_NAME__-release`（见 §8）。
+- `RELEASE_REPO` 指向**发 Release 的仓库**，并以此判定发布方式（见 §8）：
+  - 名字里**没有** `release` 字样 → 源码公开，Release 发到本仓库，`RELEASE_REPO` 必须等于本仓库全名。
+  - 名字里**含有** `release`（固定写 `ccbs-tools/__APP_NAME__-release`）→ 源码私有，Release 通过 GitHub App Secrets 发到该独立公开仓库。
+  - 不允许"源码私有但 `RELEASE_REPO` 指向私有源码仓库"：用户的程序检查更新时访问不到私有仓库。CI 会校验 `changelog.py` 与 `build.yml` 中的目标一致（§8）。
 
 帮助菜单固定项：仓库主页、（可选）视频教程、分隔线、版本介绍、检查更新、打开日志目录。
 
@@ -176,9 +179,10 @@ CI 在推 tag 时校验三处一致，不一致直接失败。
 - 触发：`workflow_dispatch`（只打包，产物进 Artifacts 保留 7 天）和 `push tags: v*`（打包并发 Release）。
 - 步骤：checkout → `astral-sh/setup-uv`（开缓存）→ `uv sync --group dev` → 解析版本（tag 去 `v`；手动触发用 pyproject 版本 + 短 sha）→ tag 时校验三处版本一致 → `uv run pyinstaller main.spec` → `Compress-Archive` 成 `__APP_NAME__-v<ver>-windows-x64.zip` → 上传 Artifact → tag 时用 `changelog.py` 生成中英双语 `RELEASE_NOTES.md` → `sha256sum` 生成 `SHA256SUMS.txt` → `gh release create`。
 - 生成 notes 的步骤设 `PYTHONUTF8=1`，否则 Windows runner 打印中文崩。
-- 发布目标二选一：
-  - **源码公开**：发到本仓库，`permissions: contents: write`，用 `github.token`。用 `templates/.github/workflows/build.yml`。
-  - **源码私有**：发到公开仓库 `ccbs-tools/__APP_NAME__-release`。本仓库 `contents: read`，通过 GitHub App `ccbs-release-bot` 换 token（Secrets：`RELEASE_APP_ID`、`RELEASE_APP_PRIVATE_KEY`；App 安装在组织并勾选该 release 仓库，权限 Contents: Read and write）。空仓库没有默认分支会导致建 Release 失败，工作流先推一个 README 初始化。用 `templates/.github/workflows/build.release-repo.yml`（改名为 `build.yml`）。
+- 发布目标二选一，由 `changelog.py` 的 `RELEASE_REPO` 是否含 `release` 字样决定（§6）：
+  - **源码公开**（`RELEASE_REPO` 不含 `release`）：发到本仓库，`permissions: contents: write`，用 `github.token`。用 `templates/.github/workflows/build.yml`。
+  - **源码私有**（`RELEASE_REPO = ccbs-tools/__APP_NAME__-release`）：发到该公开仓库。本仓库 `contents: read`，通过 GitHub App `ccbs-release-bot` 换 token（Secrets：`RELEASE_APP_ID`、`RELEASE_APP_PRIVATE_KEY`；App 安装在组织并勾选该 release 仓库，权限 Contents: Read and write）。空仓库没有默认分支会导致建 Release 失败，工作流先推一个 README 初始化。用 `templates/.github/workflows/build.release-repo.yml`（改名为 `build.yml`）。
+- 两份工作流都有 "Check release target" 一步：读 `changelog.py` 的 `RELEASE_REPO`，公开版要求它等于 `github.repository` 且不含 `release`；私有版要求它等于工作流 `env.RELEASE_REPO` 且含 `release`。不一致直接失败，避免程序检查更新时查错仓库。
 - 发版命令：
 
 ```powershell
