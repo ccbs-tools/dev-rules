@@ -1,0 +1,28 @@
+---
+description: CCBS 桌面工具（Python + PySide6）统一规范入口；修改 ccbs-tools 下任何项目或新建工具时适用
+alwaysApply: true
+---
+
+# CCBS 工具规范
+
+`ccbs-tools` 下的项目（mstsc-manager、stl-frame-editor、urdf-inspector 及后续新工具）共用一套规范：
+Python 3.12 + PySide6 + uv + loguru + PyInstaller onedir + GitHub Actions 发 Release。
+
+完整规范：`dev-rules/CONVENTIONS.md`（工作区根下的 `dev-rules/` 目录）。可复制的模板文件：`dev-rules/templates/`。
+动到下列内容前先读规范对应章节，不要凭记忆改：
+
+- 界面文案 / 语言切换 → §4（`i18n.py` 的 `tr()`、`retranslate()`）
+- 日志 → §5（`log.py`，英文日志，不记秘密）
+- 版本号、`changelog.py`、检查更新 → §6
+- `main.spec` 打包 → §7
+- `.github/workflows/build.yml` → §8
+- README / dev.md → §9
+
+要点：
+
+- 界面文字全部走 `tr()`，中英两张表键一致；控件文字在 `retranslate()` 里设置。
+- 日志 `from .log import logger`，文本英文，用 `{}` 占位。
+- 发版同时改三处版本号：`<pkg>/__init__.py`、`pyproject.toml`、`changelog.py` 的 `RELEASES`。
+- 代码注释与 docstring 用中文。
+- 老项目与规范的已知差异见 CONVENTIONS.md §13；改老项目不要求一次性对齐，但新增代码按规范写。
+- 新建工具用 Skill `ccbs-new-tool`。
