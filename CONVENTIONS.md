@@ -232,6 +232,6 @@ git push origin v0.1.1
 
 修改老项目时不要求一次性对齐，但新增代码按本规范写；遇到下列差异以本规范为准：
 
-- `mstsc-manager`：根目录 `main.py` 入口、`[tool.uv] package = false`（规范：`run.py` + hatchling）；日志目录 `%APPDATA%\mstsc-manager\`（规范多一层 `ccbs\`）；中文 README 叫 `README_zh.md`。
+- `mstsc-manager`：根目录 `main.py` 入口、`[tool.uv] package = false`（规范：`run.py` + hatchling）；中文 README 叫 `README_zh.md`。数据目录已于 0.1.3 对齐到 `%APPDATA%\ccbs\mstsc-manager\`，启动时 `storage.migrate_legacy_data()` 自动从旧目录搬配置——其他项目改运行时路径时照此处理（不丢用户数据、不覆盖新位置的非空文件、全程记日志）。
 - `stl-frame-editor`：日志目录 `~/.ccbs/stl-frame-editor/`；日志文本中文；截图目录 `assert/`；CI 用 pip 而非 uv；`requires-python >=3.10`；默认语言固定英文。
 - `urdf-inspector`：已对齐（2026-11-08）。
