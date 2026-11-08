@@ -232,6 +232,6 @@ git push origin v0.1.1
 
 修改老项目时不要求一次性对齐，但新增代码按本规范写；遇到下列差异以本规范为准：
 
-- `mstsc-manager`：根目录 `main.py` 入口、`[tool.uv] package = false`（规范：`run.py` + hatchling）；中文 README 叫 `README_zh.md`。数据目录已于 0.1.3 对齐到 `%APPDATA%\ccbs\mstsc-manager\`，不带自动迁移，升级需手动把旧目录 `%APPDATA%\mstsc-manager\` 移到 `%APPDATA%\ccbs\` 下（RELEASES 里有说明）。
-- `stl-frame-editor`：日志目录 `~/.ccbs/stl-frame-editor/`；日志文本中文；截图目录 `assert/`；CI 用 pip 而非 uv；`requires-python >=3.10`；默认语言固定英文。
+- `mstsc-manager`：已对齐（2026-11-08：`run.py` + `mstsc_manager/__main__.py` + hatchling，`README.zh.md`）。数据目录已于 0.1.3 对齐到 `%APPDATA%\ccbs\mstsc-manager\`，不带自动迁移，升级需手动把旧目录 `%APPDATA%\mstsc-manager\` 移到 `%APPDATA%\ccbs\` 下（RELEASES 里有说明）。保留的差异：`main.spec` 额外按路径前缀裁剪 Qt 运行库（§7 模板只用 `excludes`）；多了 `run.cmd` / `build.cmd` 便捷脚本。
+- `stl-frame-editor`：已对齐（2026-11-08，v0.2.1）。日志从 `~/.ccbs/stl-frame-editor/` 改到 `%APPDATA%\ccbs\stl-frame-editor\logs\`，QSettings 从 `CCBS / CCBS STL View` 改到 `ccbs / stl-frame-editor`，都不迁移（只丢语言选择，旧日志目录可手动删）。
 - `urdf-inspector`：已对齐（2026-11-08）。
