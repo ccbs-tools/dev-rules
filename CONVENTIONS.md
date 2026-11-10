@@ -4,7 +4,7 @@
 其他作者/组织（例如 `richtech`）复用时只需替换 §0 的组织占位符，规则本身不变。
 完整的可复制文件在 `templates/`，本文只讲规则、理由和最小示例。
 
-读者是人和 AI。新建项目时按 §12 的清单走；修改老项目时以本文为准，老项目与本文不一致的地方见 §13。
+读者是人和 AI。新建项目时按 §12 的清单走；修改老项目时以本文为准，项目自身与本文的差异记在该项目的 `AGENTS.md`（§13）。
 
 ## 0. 术语与占位符
 
@@ -232,12 +232,10 @@ git push origin v0.1.1
 6. 写 `RELEASES` 第一条 `0.1.0`，补 README 截图与 Controls。
 7. `git init`，首个提交，推到 `__GH_ORG__/__APP_NAME__`。
 
-## 13. 老项目与本规范的已知差异
+## 13. 项目与本规范的差异
 
-修改老项目时不要求一次性对齐，但新增代码按本规范写；遇到下列差异以本规范为准：
+本文只写规则，不记录具体项目的状态。每个项目与本规范不一致的地方记在该项目自己的 `AGENTS.md` 的「与规范的差异」一节（模板已带）：
 
-- `mstsc-manager`：已对齐（2026-11-08：`run.py` + `mstsc_manager/__main__.py` + hatchling，`README.zh.md`）。数据目录已于 0.1.3 对齐到 `%APPDATA%\ccbs\mstsc-manager\`，不带自动迁移，升级需手动把旧目录 `%APPDATA%\mstsc-manager\` 移到 `%APPDATA%\ccbs\` 下（RELEASES 里有说明）。保留的差异：`main.spec` 额外按路径前缀裁剪 Qt 运行库（§7 模板只用 `excludes`）；多了 `run.cmd` / `build.cmd` 便捷脚本。
-- `stl-frame-editor`：已对齐（2026-11-08，v0.2.1）。日志从 `~/.ccbs/stl-frame-editor/` 改到 `%APPDATA%\ccbs\stl-frame-editor\logs\`，QSettings 从 `CCBS / CCBS STL View` 改到 `ccbs / stl-frame-editor`，都不迁移（只丢语言选择，旧日志目录可手动删）。
-- `urdf-inspector`：已对齐（2026-11-08）。
-- `R1-Controller`（ORG `richtech` / GH_ORG `Richtech-Robotics`，源码私有 → Release 发到 `Richtech-Robotics/r1-controller-release`）：已对齐（2026-11-09，v0.2.0）。日志改到 `%APPDATA%\richtech\r1-controller\logs\`，QSettings 从 `Richtech / R1Controller` 改到 `richtech / r1-controller`，不迁移（RELEASES 有说明）。保留的差异：依赖 `r1-python-sdk` 是同组织私有仓库，`pyproject` 走 git 源，`build.yml` 在 `uv sync` 前先签发 App token 并 `git config url.insteadOf`（App 要同时勾选 SDK 仓库）；SDK 的状态 / 返回码文字是中文写死，界面经 `texts.py` 按码重查 i18n；`__main__.py` 里 `import mujoco` 必须早于 Qt。
-- `R1-Board-Config`（同上组织，Release 发到 `Richtech-Robotics/r1-board-config-release`）：已对齐（2026-11-09，v0.1.1）。日志从 `~/richtech/log/r1-board-config/` 改到 `%APPDATA%\richtech\r1-board-config\logs\`，语言从 `%APPDATA%\R1-Board-Config\config.json` 改存 QSettings（不迁移）。保留的差异：界面「日志」面板的 `_log()` 会把当前语言的收发原文一并写进文件日志（用户要求 TX/RX 落盘），文件里因此会出现非英文行。
+- 只记当前仍然存在、且有意保留的差异，每条写清违反的章节号和保留原因；对齐后就删掉。
+- 面向用户的迁移说明（数据目录搬家、设置不迁移等）写进 `changelog.py` 的 `RELEASES`，不记在 `AGENTS.md`。
+- 修改老项目时不要求一次性对齐，但新增代码按本规范写。

@@ -15,3 +15,9 @@
 - 日志用 `from .log import logger`，文本英文，不记录任何秘密。
 - 发版改三处版本号：`__PKG__/__init__.py`、`pyproject.toml`、`changelog.py` 的 `RELEASES`；推 `vX.Y.Z` tag 触发 CI。
 - 代码注释与 docstring 用中文。
+
+## 与规范的差异
+
+只记当前仍存在、有意保留的差异；每条注明违反的章节与原因，对齐后删除。迁移说明写 `changelog.py` 的 `RELEASES`。
+
+- 无。

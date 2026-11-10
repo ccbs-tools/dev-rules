@@ -33,4 +33,4 @@ cd dev-rules
 
 - 规则正文只改 `CONVENTIONS.md`；`cursor/rules/ccbs-conventions.mdc` 保持薄，只放索引和要点。
 - 模板文件改动后，在 `/tmp` 下按 Skill 的第 9 步跑一遍验证。
-- 老项目与规范的差异记录在 `CONVENTIONS.md` §13，对齐后从那里删掉。
+- 项目与规范的差异记在各项目自己的 `AGENTS.md`「与规范的差异」一节，本仓库不记录具体项目状态（`CONVENTIONS.md` §13）。

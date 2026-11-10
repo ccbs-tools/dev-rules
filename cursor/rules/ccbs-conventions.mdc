@@ -5,9 +5,9 @@ alwaysApply: true
 
 # CCBS 工具规范
 
-`ccbs-tools` 下的项目（mstsc-manager、stl-frame-editor、urdf-inspector 及后续新工具）和 richtech 的 R1 系列
-（R1-Controller、R1-Board-Config）共用一套规范：Python 3.12 + PySide6 + uv + loguru + PyInstaller onedir + GitHub Actions 发 Release。
-作者不同只换 §0 的 `__ORG__` / `__GH_ORG__`（ccbs → `ccbs` / `ccbs-tools`；richtech 的取值见各项目 AGENTS.md），规则不变。
+`ccbs-tools` 下的项目以及复用本规范的其他组织（如 richtech）的项目共用一套规范：
+Python 3.12 + PySide6 + uv + loguru + PyInstaller onedir + GitHub Actions 发 Release。
+作者不同只换 §0 的 `__ORG__` / `__GH_ORG__`（取值写在各项目 AGENTS.md 开头），规则不变。
 
 完整规范：`dev-rules/CONVENTIONS.md`（工作区根下的 `dev-rules/` 目录）。可复制的模板文件：`dev-rules/templates/`。
 动到下列内容前先读规范对应章节，不要凭记忆改：
@@ -26,5 +26,5 @@ alwaysApply: true
 - 发版同时改三处版本号：`<pkg>/__init__.py`、`pyproject.toml`、`changelog.py` 的 `RELEASES`。
 - `changelog.py` 的 `RELEASE_REPO` 含 `release` 字样 ⇔ 源码私有 ⇔ CI 用 App Secrets 发到 `<name>-release` 公开仓库（`build.release-repo.yml`）；否则必须等于本仓库全名。
 - 代码注释与 docstring 用中文。
-- 老项目与规范的已知差异见 CONVENTIONS.md §13；改老项目不要求一次性对齐，但新增代码按规范写。
+- 项目与规范的差异记在该项目 AGENTS.md 的「与规范的差异」一节（§13）；改老项目不要求一次性对齐，但新增代码按规范写。
 - 新建工具用 Skill `ccbs-new-tool`。
