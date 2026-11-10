@@ -5,8 +5,9 @@ alwaysApply: true
 
 # CCBS 工具规范
 
-`ccbs-tools` 下的项目（mstsc-manager、stl-frame-editor、urdf-inspector 及后续新工具）共用一套规范：
-Python 3.12 + PySide6 + uv + loguru + PyInstaller onedir + GitHub Actions 发 Release。
+`ccbs-tools` 下的项目（mstsc-manager、stl-frame-editor、urdf-inspector 及后续新工具）和 richtech 的 R1 系列
+（R1-Controller、R1-Board-Config）共用一套规范：Python 3.12 + PySide6 + uv + loguru + PyInstaller onedir + GitHub Actions 发 Release。
+作者不同只换 §0 的 `__ORG__` / `__GH_ORG__`（ccbs → `ccbs` / `ccbs-tools`；richtech 的取值见各项目 AGENTS.md），规则不变。
 
 完整规范：`dev-rules/CONVENTIONS.md`（工作区根下的 `dev-rules/` 目录）。可复制的模板文件：`dev-rules/templates/`。
 动到下列内容前先读规范对应章节，不要凭记忆改：

@@ -27,7 +27,7 @@ Requirements: Windows 10/11 x64.
 Needs [uv](https://docs.astral.sh/uv/) (it will fetch Python itself):
 
 ```powershell
-git clone https://github.com/ccbs-tools/__APP_NAME__.git
+git clone https://github.com/__GH_ORG__/__APP_NAME__.git
 cd __APP_NAME__
 uv sync
 uv run python -m __PKG__

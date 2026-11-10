@@ -16,8 +16,8 @@ uv run pyinstaller main.spec --noconfirm   # 本地打包 → dist\__APP_NAME__\
 
 | 内容 | 位置 |
 | --- | --- |
-| 日志 | `%APPDATA%\ccbs\__APP_NAME__\logs\app.log`（10 MB 轮转，保留 3 个） |
-| 语言设置 | QSettings（注册表 `HKCU\Software\ccbs\__APP_NAME__`） |
+| 日志 | `%APPDATA%\__ORG__\__APP_NAME__\logs\app.log`（10 MB 轮转，保留 3 个） |
+| 语言设置 | QSettings（注册表 `HKCU\Software\__ORG__\__APP_NAME__`） |
 
 ## 目录
 

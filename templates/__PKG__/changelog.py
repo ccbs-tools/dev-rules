@@ -24,10 +24,10 @@ from .log import logger
 
 # 发 Release 的仓库，同时决定发布方式（CI 会校验，见 CONVENTIONS.md §6/§8）：
 #   - 不含 "release" 字样 → 源码公开，Release 发到本仓库，这里必须写本仓库全名
-#   - 含 "release" 字样（固定 ccbs-tools/__APP_NAME__-release）→ 源码私有，
+#   - 含 "release" 字样（固定 __GH_ORG__/__APP_NAME__-release）→ 源码私有，
 #     CI 用 GitHub App Secrets（RELEASE_APP_ID / RELEASE_APP_PRIVATE_KEY）把 Release 发到那个公开仓库，
 #     工作流要换成 build.release-repo.yml
-RELEASE_REPO = "ccbs-tools/__APP_NAME__"
+RELEASE_REPO = "__GH_ORG__/__APP_NAME__"
 REPO_HOME = f"https://github.com/{RELEASE_REPO}"
 # 视频教程地址；None 表示帮助菜单不显示该项
 VIDEO_TUTORIAL: Optional[str] = None

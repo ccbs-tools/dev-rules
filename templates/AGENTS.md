@@ -1,6 +1,7 @@
 # __APP_NAME__ — AI 协作说明
 
-本项目遵循 CCBS 桌面工具统一规范（Python + PySide6 + uv + PyInstaller + GitHub Actions）。
+本项目遵循 CCBS 桌面工具统一规范（Python + PySide6 + uv + PyInstaller + GitHub Actions），
+本项目的组织取值（规范 §0）：ORG = `__ORG__`，GH_ORG = `__GH_ORG__`。
 
 - 完整规范：`../dev-rules/CONVENTIONS.md`（与本仓库同级的 `dev-rules` 目录）。
 - 可复制的模板文件：`../dev-rules/templates/`。

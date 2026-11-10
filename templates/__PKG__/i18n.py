@@ -5,7 +5,7 @@
     label.setText(tr("menu.file"))
     i18n.languageChanged.connect(self.retranslate)
 
-语言保存在 QSettings（组织 ccbs / 应用 APP_NAME）。首次运行跟随系统：系统是中文 → zh，否则 → en。
+语言保存在 QSettings（组织 ORG / 应用 APP_NAME，见 __init__.py）。首次运行跟随系统：系统是中文 → zh，否则 → en。
 新增文案：两张表各加一条，键名用 `模块.含义`。
 """
 

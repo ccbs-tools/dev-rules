@@ -18,7 +18,7 @@ def main(argv: list[str] | None = None) -> int:
     # 有原生 DLL 加载顺序要求的库（如 mujoco）放在这里、先于 Qt import
     from PySide6 import QtCore, QtGui, QtWidgets
 
-    from . import APP_NAME, __version__
+    from . import APP_NAME, ORG, __version__
     from .i18n import i18n
     from .icons import app_icon
     from .main_window import MainWindow
@@ -38,14 +38,14 @@ def main(argv: list[str] | None = None) -> int:
         try:
             import ctypes
 
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(f"ccbs.{APP_NAME}")
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(f"{ORG}.{APP_NAME}")
         except Exception as e:  # noqa: BLE001
             logger.warning("SetCurrentProcessExplicitAppUserModelID failed: {}", e)
 
     # 3D 工具在这里设置 QSurfaceFormat（4x MSAA、24 位深度、CompatibilityProfile），必须早于 QApplication
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setOrganizationName("ccbs")
+    app.setOrganizationName(ORG)
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(__version__)
     app.setStyle("Fusion")

@@ -1,6 +1,6 @@
 """日志（loguru）。
 
-文件：%APPDATA%\\ccbs\\__APP_NAME__\\logs\\app.log，10 MB 轮转，保留 3 个（含当前）。
+文件：%APPDATA%\\__ORG__\\__APP_NAME__\\logs\\app.log，10 MB 轮转，保留 3 个（含当前）。
 用法：
     from .log import logger
     logger.info("...")
@@ -17,9 +17,9 @@ from pathlib import Path
 
 from loguru import logger
 
-from . import APP_NAME
+from . import APP_NAME, ORG
 
-APP_DATA_DIR = Path(os.environ.get("APPDATA") or Path.home()) / "ccbs" / APP_NAME
+APP_DATA_DIR = Path(os.environ.get("APPDATA") or Path.home()) / ORG / APP_NAME
 LOG_DIR = APP_DATA_DIR / "logs"
 LOG_FILE = LOG_DIR / "app.log"
 ROTATION = "10 MB"

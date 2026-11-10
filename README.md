@@ -1,6 +1,7 @@
 # dev-rules
 
-`ccbs-tools` 组织下 Python + PySide6 桌面小工具的统一开发规范、项目模板，以及给 Cursor 用的规则与 Skill。
+Python + PySide6 桌面小工具的统一开发规范、项目模板，以及给 Cursor 用的规则与 Skill。
+最初为 `ccbs-tools` 组织制定；其他作者（如 richtech）复用时只替换 `CONVENTIONS.md` §0 的 `__ORG__` / `__GH_ORG__` 占位符。
 
 ```
 CONVENTIONS.md                      规范正文（规则 + 理由 + 最小示例）

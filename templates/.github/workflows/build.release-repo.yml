@@ -7,8 +7,8 @@ name: Build (PyInstaller)
 #   1) 在 Actions 页面手动点 "Run workflow"（workflow_dispatch）：只打包，产物在 Artifacts
 #   2) 推送 v 开头的 tag（如 v0.1.0）：打包并发布 Release 到公开仓库 RELEASE_REPO
 #
-# 发布到另一个仓库依赖 GitHub App（ccbs-release-bot）：
-#   - App 安装在 ccbs-tools 组织，仅勾选 RELEASE_REPO，权限 Contents: Read and write
+# 发布到另一个仓库依赖组织自己的 GitHub App（ccbs 用 ccbs-release-bot，其他组织按 <org>-release-bot 建一个）：
+#   - App 安装在 __GH_ORG__ 组织，仅勾选 RELEASE_REPO，权限 Contents: Read and write
 #   - 本仓库 Secrets：RELEASE_APP_ID（App ID）、RELEASE_APP_PRIVATE_KEY（.pem 全文）
 on:
   workflow_dispatch:
@@ -17,7 +17,8 @@ on:
       - "v*"
 
 env:
-  RELEASE_REPO: ccbs-tools/__APP_NAME__-release
+  RELEASE_REPO: __GH_ORG__/__APP_NAME__-release
+  RELEASE_BOT: __GH_ORG__-release-bot   # 初始化空仓库时的提交者名字，只是显示用
 
 permissions:
   contents: read   # 本仓库只需读；写公开仓库用 App token
@@ -48,7 +49,7 @@ jobs:
           $target = $m.Matches.Groups[1].Value
           Write-Host "changelog RELEASE_REPO=$target  workflow RELEASE_REPO=$env:RELEASE_REPO"
           if ($target -notmatch 'release') {
-            Write-Error "RELEASE_REPO '$target' has no 'release' in its name: this workflow publishes to a separate public release repo and expects ccbs-tools/<name>-release. Use build.yml instead if the source repo is public (see dev-rules/CONVENTIONS.md §8)."
+            Write-Error "RELEASE_REPO '$target' has no 'release' in its name: this workflow publishes to a separate public release repo and expects __GH_ORG__/<name>-release. Use build.yml instead if the source repo is public (see dev-rules/CONVENTIONS.md §8)."
             exit 1
           }
           if ($target -ne $env:RELEASE_REPO) {
@@ -141,7 +142,7 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-          owner: ccbs-tools
+          owner: __GH_ORG__
           repositories: __APP_NAME__-release
 
       - name: Ensure release repo is initialized
@@ -167,11 +168,11 @@ jobs:
 
           Release-only repository for __APP_NAME__. Windows builds are under [Releases](https://github.com/${RELEASE_REPO}/releases).
           EOF
-          git -c user.name="ccbs-release-bot[bot]" \
-              -c user.email="ccbs-release-bot[bot]@users.noreply.github.com" \
+          git -c user.name="${RELEASE_BOT}[bot]" \
+              -c user.email="${RELEASE_BOT}[bot]@users.noreply.github.com" \
               add README.md
-          git -c user.name="ccbs-release-bot[bot]" \
-              -c user.email="ccbs-release-bot[bot]@users.noreply.github.com" \
+          git -c user.name="${RELEASE_BOT}[bot]" \
+              -c user.email="${RELEASE_BOT}[bot]@users.noreply.github.com" \
               commit -q -m "Initial commit"
           git push -q "https://x-access-token:${GH_TOKEN}@github.com/${RELEASE_REPO}.git" main
 

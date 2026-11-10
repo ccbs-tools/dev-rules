@@ -11,6 +11,8 @@ description: 按 CCBS 规范从 dev-rules/templates 新建一个 Python + PySide
 
 从用户消息里取，缺的用 AskQuestion 一次问齐：
 
+- `ORG` / `GH_ORG`：作者组织短名（全小写，用于 QSettings / `%APPDATA%\<ORG>\` / 任务栏 AppID）和 GitHub 组织名。
+  用户没说就按工作区里已有同作者项目的取值；都没有时默认 `ccbs` / `ccbs-tools`。已知取值：ccbs → `ccbs` / `ccbs-tools`；richtech → `richtech` / 见其 AGENTS.md。
 - `APP_NAME`：仓库名，kebab-case（如 `urdf-inspector`）。`PKG` 自动取下划线版本。
 - `TITLE`：一句话中文描述。
 - `APP_TITLE_EN` / `APP_TITLE_ZH`：窗口标题。
@@ -22,11 +24,11 @@ description: 按 CCBS 规范从 dev-rules/templates 新建一个 Python + PySide
 
 1. 目标目录 `<工作区根>/<APP_NAME>/` 必须不存在。
 2. 复制 `dev-rules/templates/` 全部内容（含 `.github/`、`.gitignore`）到目标目录；把 `templates/__PKG__/` 重命名为 `<PKG>/`。
-3. 全文替换占位符：`__APP_NAME__` → APP_NAME，`__PKG__` → PKG，`__TITLE__` → TITLE，`__APP_TITLE_EN__`、`__APP_TITLE_ZH__`。
-   替换后 `rg "__APP_NAME__|__PKG__|__TITLE__|__APP_TITLE"` 必须无结果。
+3. 全文替换占位符：`__ORG__` → ORG，`__GH_ORG__` → GH_ORG，`__APP_NAME__` → APP_NAME，`__PKG__` → PKG，`__TITLE__` → TITLE，`__APP_TITLE_EN__`、`__APP_TITLE_ZH__`。
+   先替换 `__GH_ORG__` 再替换 `__ORG__`（避免前者被后者部分匹配）。替换后 `rg "__ORG__|__GH_ORG__|__APP_NAME__|__PKG__|__TITLE__|__APP_TITLE"` 必须无结果。
 4. 发布目标（规则：`changelog.py` 的 `RELEASE_REPO` 含 `release` 字样 ⇔ 源码私有 ⇔ 用 App Secrets 发到独立公开仓库；CI 会校验）：
-   - 源码公开：保留 `.github/workflows/build.yml`，删除 `build.release-repo.yml`；`RELEASE_REPO` 保持 `ccbs-tools/<APP_NAME>`。
-   - 源码私有：删除 `build.yml`，把 `build.release-repo.yml` 改名为 `build.yml`；把 `<PKG>/changelog.py` 的 `RELEASE_REPO` 改成 `ccbs-tools/<APP_NAME>-release`（与工作流 `env.RELEASE_REPO` 相同）。
+   - 源码公开：保留 `.github/workflows/build.yml`，删除 `build.release-repo.yml`；`RELEASE_REPO` 保持 `<GH_ORG>/<APP_NAME>`。
+   - 源码私有：删除 `build.yml`，把 `build.release-repo.yml` 改名为 `build.yml`；把 `<PKG>/changelog.py` 的 `RELEASE_REPO` 改成 `<GH_ORG>/<APP_NAME>-release`（与工作流 `env.RELEASE_REPO` 相同）。
 5. `pyproject.toml`：按需追加依赖；用到 Qt Addons 模块才把 `PySide6-Essentials` 换成 `PySide6`。
 6. 3D 工具：在 `__main__.py` 标注位置加 `QSurfaceFormat`（4x MSAA、24 位深度、CompatibilityProfile）；`main.spec` 不要排除 `QtOpenGL*`。纯 Widgets 工具：可把 `PySide6.QtOpenGL`、`PySide6.QtOpenGLWidgets` 加进 `excludes`。
 7. `<PKG>/changelog.py` 的 `RELEASES[0]`：版本 `0.1.0`，日期改为今天，notes 写上这个工具做什么（中英都写）。
@@ -35,16 +37,16 @@ description: 按 CCBS 规范从 dev-rules/templates 新建一个 Python + PySide
    ```powershell
    uv sync --group dev
    $env:QT_QPA_PLATFORM="offscreen"; $env:PYTHONUTF8="1"
-   uv run python -c "import sys; from <PKG>.log import setup_logging; setup_logging(); from PySide6 import QtWidgets, QtCore; from <PKG> import APP_NAME; from <PKG>.i18n import i18n; from <PKG>.main_window import MainWindow; app = QtWidgets.QApplication(sys.argv); app.setOrganizationName('ccbs'); app.setApplicationName(APP_NAME); i18n.load(); w = MainWindow(); w.show(); i18n.set('en'); i18n.set('zh'); print(w.windowTitle()); QtCore.QTimer.singleShot(300, app.quit); sys.exit(app.exec())"
+   uv run python -c "import sys; from <PKG>.log import setup_logging; setup_logging(); from PySide6 import QtWidgets, QtCore; from <PKG> import APP_NAME, ORG; from <PKG>.i18n import i18n; from <PKG>.main_window import MainWindow; app = QtWidgets.QApplication(sys.argv); app.setOrganizationName(ORG); app.setApplicationName(APP_NAME); i18n.load(); w = MainWindow(); w.show(); i18n.set('en'); i18n.set('zh'); print(w.windowTitle()); QtCore.QTimer.singleShot(300, app.quit); sys.exit(app.exec())"
    ```
-   退出码 0、打印出窗口标题，且 `%APPDATA%\ccbs\<APP_NAME>\logs\app.log` 有 `language:` 一行。
+   退出码 0、打印出窗口标题，且 `%APPDATA%\<ORG>\<APP_NAME>\logs\app.log` 有 `language:` 一行。
    注意 `QTimer.singleShot` 必须在 `QApplication` 创建之后调用，否则不会触发（`main()` 内部建 app，所以不能用它来做自动退出）。
    再跑 `uv run pyinstaller main.spec --noconfirm`，确认 `dist/<APP_NAME>/<APP_NAME>.exe` 和 `<APP_NAME>-lib/` 生成。
    最后正常跑一次 `uv run python -m <PKG>` 让用户看窗口。
-10. `git init -b main`，首个提交；远程由用户在 GitHub `ccbs-tools` 组织下建好后再 `git remote add origin` 推送。
+10. `git init -b main`，首个提交；远程由用户在 GitHub `<GH_ORG>` 组织下建好后再 `git remote add origin` 推送。
 
 ## 交付时说明
 
 - 还没做的：`assets/` 图标与 README 截图（`soft-empty-view.png`、`open-xxx-view.png`）、README 的 Usage/Controls、Demo 视频链接。
 - 发版流程：三处版本号 + `git tag vX.Y.Z && git push origin vX.Y.Z`（`dev.md` 已写）。
-- 私有仓库还需要在仓库 Secrets 里配 `RELEASE_APP_ID`、`RELEASE_APP_PRIVATE_KEY`，并在组织里把 `ccbs-release-bot` App 授权给 `<APP_NAME>-release`。
+- 私有仓库还需要在仓库 Secrets 里配 `RELEASE_APP_ID`、`RELEASE_APP_PRIVATE_KEY`，并在组织里把 `<GH_ORG>-release-bot` App（ccbs 的叫 `ccbs-release-bot`）授权给 `<APP_NAME>-release`。
