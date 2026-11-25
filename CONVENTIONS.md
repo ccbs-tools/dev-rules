@@ -181,7 +181,7 @@ CI 在推 tag 时校验三处一致，不一致直接失败。
 `.github/workflows/build.yml`（模板），`windows-latest`：
 
 - 触发：`workflow_dispatch`（只打包，产物进 Artifacts 保留 7 天）和 `push tags: v*`（打包并发 Release）。
-- 步骤：checkout → `astral-sh/setup-uv`（开缓存）→ `uv sync --group dev` → 解析版本（tag 去 `v`；手动触发用 pyproject 版本 + 短 sha）→ tag 时校验三处版本一致 → `uv run pyinstaller main.spec` → `Compress-Archive` 成 `__APP_NAME__-v<ver>-windows-x64.zip` → 上传 Artifact → tag 时用 `changelog.py` 生成中英双语 `RELEASE_NOTES.md` → `sha256sum` 生成 `SHA256SUMS.txt` → `gh release create`。
+- 步骤：checkout → `astral-sh/setup-uv`（开缓存）→ `uv sync --group dev` → 解析版本（tag 去 `v`；手动触发用 pyproject 版本 + 短 sha）→ tag 时校验三处版本一致 → `uv run pyinstaller main.spec` → `Compress-Archive` 成 `__APP_NAME__-v<ver>-windows-x64.zip` → 上传 Artifact → tag 时用 `changelog.py` 生成双语 `RELEASE_NOTES.md`（英文在前、中文在后） → `sha256sum` 生成 `SHA256SUMS.txt` → `gh release create`。
 - 生成 notes 的步骤设 `PYTHONUTF8=1`，否则 Windows runner 打印中文崩。
 - 发布目标二选一，由 `changelog.py` 的 `RELEASE_REPO` 是否含 `release` 字样决定（§6）：
   - **源码公开**（`RELEASE_REPO` 不含 `release`）：发到本仓库，`permissions: contents: write`，用 `github.token`。用 `templates/.github/workflows/build.yml`。
